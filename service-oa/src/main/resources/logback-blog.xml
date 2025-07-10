@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <jmxConfigurator/>
+
+    <!-- 引入 Spring Boot 默认配置 -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <!-- 应用名称 -->
+    <property scope="context" name="appName" value="oa" />
+    <!-- 自定义日志输出路径 -->
+    <property name="LOG_PATH" value="D:/springboot_project/oa-parent/logs" />
+    <!-- 文件日志输出格式 -->
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"/>
+
+    <!-- 文件日志输出 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 当前正在写入的日志文件 -->
+        <file>${LOG_PATH}/${appName}.log</file>
+
+        <!-- 按时间+大小滚动 ✅ 最常用）结合了按时间和按大小两种策略每天一个文件，
+             同时单个文件大小受限制
+             一旦大小超限，就在同一天创建带索引的新文件（%i）-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 日志文件命名模式（包含日期和索引）-->
+            <fileNamePattern>${LOG_PATH}/${appName}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 最多保留30天的日志文件 -->
+            <maxHistory>30</maxHistory>
+            <!-- 单个文件最大 10MB，超过后生成下一个索引文件 -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- 所有日志文件总容量不超过 1GB -->
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 开发环境：仅输出控制台 -->
+    <springProfile name="dev">
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <!-- 生产环境：输出控制台 + 文件 -->
+    <springProfile name="prod">
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+        <root level="INFO">
+            <appender-ref ref="FILE" />
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+</configuration>

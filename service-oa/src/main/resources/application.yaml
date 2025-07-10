@@ -1,0 +1,35 @@
+app:
+  name: oa
+
+
+spring:
+
+  profiles:
+    # 默认激活 dev 环境
+    active: dev
+
+  jackson:
+    # 设置后台返参，若字段值为 null, 则不返回
+    #default-property-inclusion: non_null
+    # 设置日期字段格式
+    date-format: yyyy-MM-dd HH:mm:ss
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/oa?useSSL=false&serverTimezone=UTC
+    username: root
+    password: '040731'
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 2
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 1
+        time-between-eviction-runs: 10s
+
+
+
+
