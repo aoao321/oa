@@ -83,7 +83,7 @@ public class SysRoleController {
 
     @ApiOperation("修改用户角色")
     @PostMapping("/doAssign")
-    public Result doAssgin(@RequestBody AssginRoleDto assginRoleDto){
+    public Result doAssign(@RequestBody AssginRoleDto assginRoleDto){
         sysRoleService.updateUserRole(assginRoleDto);
         return Result.ok();
     }

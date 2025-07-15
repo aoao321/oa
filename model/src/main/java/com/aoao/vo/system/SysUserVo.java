@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -47,6 +48,8 @@ public class SysUserVo implements Serializable {
 	private Date createTime;
 
 	private Date updateTime;
+
+	private List<String> roleList;
 
 }
 
