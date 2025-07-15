@@ -1,9 +1,12 @@
 app:
   name: oa
 
+server:
+  port: 8080
 
 spring:
-
+  application:
+    name: oa
   profiles:
     # 默认激活 dev 环境
     active: dev
@@ -19,6 +22,11 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/oa?useSSL=false&serverTimezone=UTC
     username: root
     password: '040731'
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
   redis:
     host: 127.0.0.1
     port: 6379
@@ -29,6 +37,13 @@ spring:
         max-idle: 10
         min-idle: 1
         time-between-eviction-runs: 10s
+
+mybatis-plus:
+  type-aliases-package: com.aoao.model # 别名扫描包
+logging:
+  level:
+    com.aoao: debug
+
 
 
 

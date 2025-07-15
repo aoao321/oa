@@ -10,6 +10,7 @@ import lombok.Data;
 import com.aoao.model.base.BaseEntity;
 import com.aoao.model.system.SysRole;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -67,5 +68,9 @@ public class SysUser extends BaseEntity {
 	//部门
 	@TableField(exist = false)
 	private String deptName;
+
+	private Date createTime;
+
+	private Date updateTime;
 }
 

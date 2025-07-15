@@ -71,7 +71,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
         <jackson.version>2.15.2</jackson.version>
-        <knife4j>3.0.2</knife4j>
+        <pagehelper>1.4.6</pagehelper>
         <jjwt>0.9.1</jjwt>
 
     </properties>
@@ -95,6 +95,12 @@
                 <groupId>com.aoao</groupId>
                 <artifactId>model</artifactId>
                 <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper}</version>
             </dependency>
 
             <dependency>
@@ -130,12 +136,12 @@
                 <version>3.4.3</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-boot-starter</artifactId>
-                <version>${knife4j}</version>
-            </dependency>
 
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>3.0.0</version>
+            </dependency>
 
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aoao.mapper.SysUserMapper">
+    <select id="selectListByDto" resultType="com.aoao.vo.system.SysUserVo">
+        SELECT
+        su.*,
+        sp.name AS post_name,
+        sd.name AS dept_name
+        FROM
+        sys_user su
+        LEFT JOIN sys_post sp ON su.post_id = sp.id
+        LEFT JOIN sys_dept sd ON su.dept_id = sd.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND su.username LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="begin != null">
+                AND su.create_time >= #{begin}
+            </if>
+            <if test="end != null">
+                AND su.create_time &lt;= #{end}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

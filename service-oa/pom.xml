@@ -12,14 +12,14 @@
     <groupId>com.aoao</groupId>
     <artifactId>service-oa</artifactId>
     <name>service-oa</name>
-    <description> (入口项目，负责博客前台展示相关功能，打包也放在这个模块负责)</description>
+    <description>( 入口项目 )</description>
 
     <dependencies>
 
-
         <dependency>
             <groupId>com.aoao</groupId>
-            <artifactId>common</artifactId>
+            <artifactId>common-util</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -37,6 +37,16 @@
         </dependency>
 
         <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
@@ -45,6 +55,11 @@
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
             <version>6.1.6.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
         </dependency>
 
         <dependency>
@@ -59,6 +74,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.aoao</groupId>
+            <artifactId>model</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

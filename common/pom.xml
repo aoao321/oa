@@ -5,7 +5,6 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-
     <parent>
         <groupId>com.aoao</groupId>
         <artifactId>oa-parent</artifactId>
@@ -14,44 +13,37 @@
     </parent>
 
     <modules>
-        <!-- 服务模块 -->
         <module>service-util</module>
-        <!-- 通用工具模块 -->
         <module>common-util</module>
     </modules>
 
-
     <packaging>pom</packaging>
     <artifactId>common</artifactId>
-    <name>oa-common</name>
+    <name>common</name>
     <description>核心工具类模块</description>
 
+
     <dependencies>
-        <!-- 如果用到了 lombok（也可以由 common 父模块继承） -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
 
-        <!-- Guava 工具库 -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
 
-        <!-- commons-lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!-- 日志 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>
