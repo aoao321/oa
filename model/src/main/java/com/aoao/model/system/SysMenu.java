@@ -1,7 +1,9 @@
 package com.aoao.model.system;
 
 import com.aoao.model.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,6 +17,9 @@ import java.util.List;
 public class SysMenu extends BaseEntity {
 	
 	private static final long serialVersionUID = 1L;
+
+	@TableId(value = "id",type = IdType.AUTO)
+	private Long id;
 
 	@ApiModelProperty(value = "所属上级")
 	@TableField("parent_id")
@@ -55,6 +60,7 @@ public class SysMenu extends BaseEntity {
 	// 下级列表
 	@TableField(exist = false)
 	private List<SysMenu> children;
+
 	//是否选中
 	@TableField(exist = false)
 	private boolean isSelect;

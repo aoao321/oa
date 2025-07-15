@@ -56,8 +56,8 @@ public class SysRoleController {
     @GetMapping("/get/{id}")
     @ApiOperation("根据id查询角色")
     public Result<SysRoleQueryVo> getSysRoleById(@PathVariable Long id){
-        sysRoleService.getById(id);
-        return Result.ok();
+        SysRoleQueryVo sysRoleQueryVo = sysRoleService.getById(id);
+        return Result.ok(sysRoleQueryVo);
     }
 
     @PutMapping("/update")
@@ -87,6 +87,8 @@ public class SysRoleController {
         sysRoleService.updateUserRole(assginRoleDto);
         return Result.ok();
     }
+
+    
 
 
 }
