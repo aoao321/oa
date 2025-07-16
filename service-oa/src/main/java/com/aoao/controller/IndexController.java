@@ -1,12 +1,16 @@
 package com.aoao.controller;
 
+import com.aoao.dto.system.LoginDto;
+import com.aoao.enums.ResponseCodeEnum;
 import com.aoao.result.Result;
+import com.aoao.service.IndexService;
+import com.aoao.vo.system.LoginVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,12 +24,19 @@ import java.util.Map;
 @ApiModel("登录登出模块")
 public class IndexController {
 
+    @Autowired
+    private IndexService indexService;
+
     @PostMapping("/login")
     @ApiOperation("登录")
-    public Result login() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("token","admin");
-        return Result.ok(map);
+    public Result<LoginVo> login(@RequestBody LoginDto loginDto) {
+        try {
+            return Result.ok(indexService.login(loginDto));
+        }catch (BadCredentialsException e){
+            return Result.fail(ResponseCodeEnum.PWD_ERROR);
+        }catch (DisabledException e){
+            return Result.fail(ResponseCodeEnum.STATUS_DOWN);
+        }
     }
 
     @GetMapping("/info")

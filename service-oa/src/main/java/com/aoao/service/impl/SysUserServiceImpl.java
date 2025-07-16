@@ -8,14 +8,8 @@ import com.aoao.model.system.SysUser;
 import com.aoao.result.PageResult;
 import com.aoao.service.SysUserService;
 import com.aoao.vo.system.SysUserVo;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.util.StringUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.A;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

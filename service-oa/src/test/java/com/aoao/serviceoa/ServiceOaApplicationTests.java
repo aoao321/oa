@@ -1,9 +1,7 @@
 package com.aoao.serviceoa;
 
-import com.aoao.mapper.SysRoleMapper;
 import com.aoao.mapper.SysUserMapper;
 import com.aoao.mapper.SysUserRoleMapper;
-import com.aoao.model.system.SysRole;
 import com.aoao.model.system.SysUser;
 import com.aoao.model.system.SysUserRole;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

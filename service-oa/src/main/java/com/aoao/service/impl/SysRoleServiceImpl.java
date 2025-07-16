@@ -2,18 +2,15 @@ package com.aoao.service.impl;
 
 import com.aoao.dto.system.AssginRoleDto;
 import com.aoao.dto.system.SysRoleDto;
-import com.aoao.dto.system.SysUserQueryDto;
 import com.aoao.mapper.SysRoleMapper;
 import com.aoao.mapper.SysUserRoleMapper;
 import com.aoao.model.system.SysRole;
 import com.aoao.model.system.SysUserRole;
 import com.aoao.result.PageResult;
-import com.aoao.result.Result;
 import com.aoao.service.SysRoleService;
 import com.aoao.vo.system.SysRoleQueryVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;

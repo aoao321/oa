@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aoao.mapper.SysMenuMapper">
+
+
+    <select id="selectUserWithMenus" resultType="java.lang.String">
+        WITH roleIdWithPerms AS (
+            SELECT rm.role_id, m.perms
+            FROM sys_menu m
+                     JOIN sys_role_menu rm ON rm.menu_id = m.id
+            WHERE m.is_deleted = 0
+              AND m.perms IS NOT NULL
+              AND m.perms != ''
+            )
+        SELECT DISTINCT rp.perms
+        FROM sys_user u
+                 JOIN sys_user_role ur ON u.id = ur.user_id
+                 JOIN roleIdWithPerms rp ON ur.role_id = rp.role_id
+        WHERE u.is_deleted = 0
+          AND u.id = #{userId}
+    </select>
+
+</mapper>

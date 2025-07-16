@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -33,6 +34,7 @@ public class SysUserController {
 
     //用户条件分页查询
     @ApiOperation("用户条件分页查询")
+    @PreAuthorize("hasAuthority('bnt.sysUser.list')")
     @GetMapping("{page}/{limit}")
     public Result<PageResult<SysUserVo>> page(@PathVariable Integer page,
                                               @PathVariable Integer limit,
@@ -42,6 +44,7 @@ public class SysUserController {
     }
 
     @ApiOperation(value = "获取用户")
+    @PreAuthorize("hasAuthority('bnt.sysUser.list')")
     @GetMapping("get/{id}")
     public Result get(@PathVariable Long id) {
         SysUser user = sysUserService.getById(id);
@@ -49,6 +52,7 @@ public class SysUserController {
     }
 
     @ApiOperation(value = "保存用户")
+    @PreAuthorize("hasAuthority('bnt.sysUser.add')")
     @PostMapping("save")
     public Result save(@RequestBody SysUser user) {
         sysUserService.save(user);
@@ -56,6 +60,7 @@ public class SysUserController {
     }
 
     @ApiOperation(value = "更新用户")
+    @PreAuthorize("hasAuthority('bnt.sysUser.update')")
     @PutMapping("update")
     public Result updateById(@RequestBody SysUser user) {
         sysUserService.updateById(user);
@@ -63,6 +68,7 @@ public class SysUserController {
     }
 
     @ApiOperation(value = "删除用户")
+    @PreAuthorize("hasAuthority('bnt.sysUser.remove')")
     @DeleteMapping("remove/{id}")
     public Result remove(@PathVariable Long id) {
         sysUserService.removeById(id);
@@ -70,6 +76,7 @@ public class SysUserController {
     }
 
     @ApiOperation(value = "更新用户状态")
+    @PreAuthorize("hasAuthority('bnt.sysUser.update')")
     @GetMapping("/updateStatus/{id}/{status}")
     public Result updateStatus(@PathVariable Long id, @PathVariable Integer status) {
         sysUserService.updateStatus(id,status);

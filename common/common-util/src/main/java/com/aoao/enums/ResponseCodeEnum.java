@@ -15,8 +15,10 @@ public enum ResponseCodeEnum {
     LOGIN_FAIL(400, "登录失败"),
     UNAUTHORIZED(402,"用户未授权"),
     USERNAME_OR_PWD_IS_NULL(403,"用户名或密码为空"),
-    USERNAME_OR_PWD_ERROR(401, "用户名或密码错误"),
-    ;
+    PWD_ERROR(401, "密码错误"),
+    REPEAT_LOGIN(404,"用户重复登录"),
+    FORBIDDEN(301, "权限不足"),
+    STATUS_DOWN(405,"账号被禁用" );
 
     ResponseCodeEnum(Integer errorCode, String errorMessage) {
         this.errorCode = errorCode;

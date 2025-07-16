@@ -8,6 +8,7 @@ import com.aoao.service.SysMenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class SysMenuController {
     private SysMenuService sysMenuService;
 
     @ApiOperation("查询所有菜单")
+    @PreAuthorize("hasAuthority('bnt.sysMenu.list')")
     @GetMapping("/findNodes")
     public Result<List<SysMenu>> findNodes() {
         List<SysMenu> nodes = sysMenuService.findNodes();
@@ -32,6 +34,7 @@ public class SysMenuController {
     }
 
     @ApiOperation("新增菜单")
+    @PreAuthorize("hasAuthority('bnt.sysMenu.add')")
     @PostMapping("/save")
     public Result save(@RequestBody SysMenu sysMenu) {
         sysMenuService.save(sysMenu);
@@ -39,6 +42,7 @@ public class SysMenuController {
     }
 
     @ApiOperation("删除菜单")
+    @PreAuthorize("hasAuthority('bnt.sysMenu.remove')")
     @DeleteMapping("/remove/{id}")
     public Result remove(@PathVariable Long id) {
         sysMenuService.removeById(id);
@@ -46,6 +50,7 @@ public class SysMenuController {
     }
 
     @ApiOperation("修改菜单")
+    @PreAuthorize("hasAuthority('bnt.sysMenu.update')")
     @PutMapping("/update")
     public Result update(@RequestBody SysMenu sysMenu) {
         sysMenuService.update(sysMenu);
@@ -53,6 +58,7 @@ public class SysMenuController {
     }
 
     @ApiOperation("根据角色获取菜单")
+    @PreAuthorize("hasAuthority('bnt.sysMenu.list')")
     @GetMapping("/toAssign/{roleId}")
     public Result<List<SysMenu>> toAssign(@PathVariable Long roleId) {
         List<SysMenu> list = sysMenuService.findSysMenuByRoleId(roleId);
@@ -60,6 +66,7 @@ public class SysMenuController {
     }
 
     @ApiOperation("修改菜单权限")
+    @PreAuthorize("hasAuthority('bnt.sysMenu.update')")
     @PostMapping("/doAssign")
     public Result doAssign(@RequestBody AssignMenuDto assignMenuDto) {
         sysMenuService.doAssign(assignMenuDto);
