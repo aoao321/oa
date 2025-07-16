@@ -21,5 +21,15 @@
         WHERE u.is_deleted = 0
           AND u.id = #{userId}
     </select>
+    <select id="findMenuListByUserId" resultType="com.aoao.model.system.SysMenu">
+        SELECT DISTINCT m.*
+        FROM sys_menu m
+                 INNER JOIN sys_role_menu rm ON m.id = rm.menu_id
+                 INNER JOIN sys_user_role ur ON rm.role_id = ur.role_id
+                 INNER JOIN sys_user u ON u.id = ur.user_id
+        WHERE u.id = #{userId}
+          AND m.status = 1
+        ORDER BY m.sort_value ASC
+    </select>
 
 </mapper>

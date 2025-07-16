@@ -1,8 +1,10 @@
 package com.aoao.mapper;
 
 import com.aoao.model.system.SysMenu;
+import com.aoao.vo.system.RouterVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,4 +16,7 @@ import java.util.List;
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
     List<String> selectUserWithMenus(Long id);
+
+
+    List<SysMenu> findMenuListByUserId(Long userId);
 }

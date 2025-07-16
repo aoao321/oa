@@ -12,6 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,11 +41,9 @@ public class IndexController {
     }
 
     @GetMapping("/info")
-    public Result info() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("roles","[admin]");
-        map.put("name","admin");
-        map.put("avatar","https://oss.aliyuncs.com/aliyun_id_photo_bucket/default_handsome.jpg");
+    public Result info(HttpServletRequest request) {
+        Map<String, Object> map = indexService.info(request);
+        System.out.println(map);
         return Result.ok(map);
     }
 

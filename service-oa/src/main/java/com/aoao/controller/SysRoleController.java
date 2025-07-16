@@ -77,17 +77,16 @@ public class SysRoleController {
         return Result.ok();
     }
 
-    @ApiOperation("根据用户获取角色数据")
     @PreAuthorize("hasAuthority('bnt.sysRole.list')")
+    @ApiOperation("根据用户获取角色数据")
     @GetMapping("/toAssign/{userId}")
     public Result<Map<String, Object>> toAssign(@PathVariable Long userId) {
         Map<String, Object> roles= sysRoleService.findRoleByUserId(userId);
         return Result.ok(roles);
     }
 
-
-    @ApiOperation("修改用户角色")
     @PreAuthorize("hasAuthority('bnt.sysUser.assignRole')")
+    @ApiOperation("修改用户角色")
     @PostMapping("/doAssign")
     public Result doAssign(@RequestBody AssginRoleDto assginRoleDto){
         sysRoleService.updateUserRole(assginRoleDto);
