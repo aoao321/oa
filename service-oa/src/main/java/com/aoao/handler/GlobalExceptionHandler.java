@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileNotFoundException;
 
 /**
  * @author aoao
@@ -27,6 +28,12 @@ public class GlobalExceptionHandler {
     public <T extends BaseException> Result handleBizException(HttpServletRequest request, T e) {
         log.warn("{} request fail, errorCode: {}, errorMessage: {}", request.getRequestURI(), e.getErrorCode(), e.getErrorMessage());
         return Result.fail(e.getMessage());
+    }
+
+    @ExceptionHandler(FileNotFoundException.class)
+    public Result fileNotFoundException(HttpServletRequest request, Exception e) {
+        log.error("{} request error, ", request.getRequestURI(), e);
+        return Result.fail(ResponseCodeEnum.SYSTEM_ERROR);
     }
 
 

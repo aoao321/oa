@@ -10,19 +10,16 @@ spring:
   profiles:
     # 默认激活 dev 环境
     active: dev
-
   jackson:
     # 设置后台返参，若字段值为 null, 则不返回
     #default-property-inclusion: non_null
     # 设置日期字段格式
     date-format: yyyy-MM-dd HH:mm:ss
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/oa?useSSL=false&serverTimezone=UTC
     username: root
     password: '040731'
-
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -37,6 +34,17 @@ spring:
         max-idle: 10
         min-idle: 1
         time-between-eviction-runs: 10s
+
+  activiti:
+    # 自动创建表
+    database-schema-update: true
+    # 检查历史表
+    db-history-used: true
+    # 保存流程的相关数据
+    history-level: full
+    # 检验流程文件
+    check-process-definitions: true
+
 
 mybatis-plus:
   type-aliases-package: com.aoao.model # 别名扫描包
@@ -56,6 +64,4 @@ jwt:
   tokenHeaderKey: Authorization
   # 前端传递token前缀
   tokenPrefix: Bearer
-
-
 

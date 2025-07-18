@@ -58,8 +58,6 @@ public class IndexServiceImpl implements IndexService {
             LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
             String token = jwtTokenHelper.generateToken(loginUser.getUsername());
             return new LoginVo(token);
-
-
     }
 
     @Override
@@ -85,6 +83,9 @@ public class IndexServiceImpl implements IndexService {
 
         // 根据userId获取路由信息，返回用户可以操作的左侧菜单
         List<RouterVo> routerVoList = sysMenuService.findSysMenuByUserId(userId);
+
+
+
 
         // 根据userId获取按钮权限，返回用户可以操作的按钮
         List<String> permsList = sysMenuService.findUserPermsList(sysUser.getId());

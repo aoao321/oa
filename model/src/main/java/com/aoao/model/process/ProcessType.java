@@ -24,6 +24,9 @@ public class ProcessType extends BaseEntity {
 	@TableField("description")
 	private String description;
 
+	/**
+	 * 类型下的模板
+	 */
 	@TableField(exist = false)
 	private List<ProcessTemplate> processTemplateList;
 }

@@ -83,7 +83,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 if (selectedUser == null) {
                     throw new UsernameNotFoundException(username);
                 }
-                // 检查用户状态（
+                // 检查用户状态
                 if (selectedUser.getStatus() != 1) {
                     authenticationEntryPoint.commence(request, response,
                             new AuthenticationServiceException("用户已被禁用"));

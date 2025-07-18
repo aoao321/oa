@@ -10,6 +10,7 @@ import com.aoao.vo.system.MetaVo;
 import com.aoao.vo.system.RouterVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -109,14 +110,22 @@ public class SysMenuServiceImpl implements SysMenuService {
             wrapper.eq(SysMenu::getStatus, 1);
             wrapper.orderByAsc(SysMenu::getSortValue);
             sysMenuList = sysMenuMapper.selectList(wrapper);
+//            Iterator<SysMenu> iterator = sysMenuList.iterator();
+//            while (iterator.hasNext()) {
+//                SysMenu sysMenu = iterator.next();
+//                if (StringUtil.isEmpty(sysMenu.getPath())) {
+//                    iterator.remove();
+//                }
+//            }
         } else {
             // 普通用户，根据userId查询其权限内菜单
             sysMenuList = sysMenuMapper.findMenuListByUserId(userId);
         }
 
         // 构建菜单树
-        List<SysMenu> sysMenuTree = findChildren(0l, sysMenuList);
-        return buildRouter(sysMenuTree); // 转为 RouterVo 列表
+        List<SysMenu> sysMenuTreeList = findChildren(0l, sysMenuList);
+        List<RouterVo> routerVoList = this.buildRouter(sysMenuTreeList);
+        return routerVoList; // 转为 RouterVo 列表
     }
 
 
@@ -130,6 +139,7 @@ public class SysMenuServiceImpl implements SysMenuService {
             wrapper.eq(SysMenu::getStatus, 1);       // 启用状态
             wrapper.eq(SysMenu::getType, 2);         // 只查按钮
             sysMenuList = sysMenuMapper.selectList(wrapper);
+
         } else {
             // 普通用户：多表关联查询权限内菜单
             sysMenuList = sysMenuMapper.findMenuListByUserId(userId).stream()
@@ -191,27 +201,42 @@ public class SysMenuServiceImpl implements SysMenuService {
         return children;
     }
 
+    /**
+     * 根据菜单构建路由
+     * @param menus
+     * @return
+     */
     private List<RouterVo> buildRouter(List<SysMenu> menus) {
-        List<RouterVo> routers = new ArrayList<>();
+        List<RouterVo> routers = new LinkedList<>();
         for (SysMenu menu : menus) {
             RouterVo router = new RouterVo();
             router.setHidden(false);
             router.setAlwaysShow(false);
             router.setPath(getRouterPath(menu));
+            router.setComponent(menu.getComponent());
             router.setMeta(new MetaVo(menu.getName(), menu.getIcon()));
-
-            // 如果是目录，component 固定为 Layout
-            router.setComponent(menu.getComponent()); // 设置为 Layout
-
-            if (menu.getType() == 2){
-                continue;
-            }
             List<SysMenu> children = menu.getChildren();
-            if (!CollectionUtils.isEmpty(children)) {
-                router.setAlwaysShow(true);
-                router.setChildren(buildRouter(children)); // 递归设置子菜单
-            }
 
+            //如果当前是菜单，需将按钮对应的路由加载出来，如：“角色授权”按钮对应的路由在“系统管理”下面
+            if(menu.getType().intValue() == 1) {
+                List<SysMenu> hiddenMenuList = children.stream().filter(item -> !StringUtils.isEmpty(item.getComponent())).collect(Collectors.toList());
+                for (SysMenu hiddenMenu : hiddenMenuList) {
+                    RouterVo hiddenRouter = new RouterVo();
+                    hiddenRouter.setHidden(true);
+                    hiddenRouter.setAlwaysShow(false);
+                    hiddenRouter.setPath(getRouterPath(hiddenMenu));
+                    hiddenRouter.setComponent(hiddenMenu.getComponent());
+                    hiddenRouter.setMeta(new MetaVo(hiddenMenu.getName(), hiddenMenu.getIcon()));
+                    routers.add(hiddenRouter);
+                }
+            } else {
+                if (!CollectionUtils.isEmpty(children)) {
+                    if(children.size() > 0) {
+                        router.setAlwaysShow(true);
+                    }
+                    router.setChildren(buildRouter(children));
+                }
+            }
             routers.add(router);
         }
         return routers;

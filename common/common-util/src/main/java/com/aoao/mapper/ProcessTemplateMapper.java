@@ -2,8 +2,11 @@ package com.aoao.mapper;
 
 
 import com.aoao.model.process.ProcessTemplate;
+import com.aoao.vo.process.ProcessTemplateQueryListVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author aoao
@@ -11,4 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ProcessTemplateMapper extends BaseMapper<ProcessTemplate> {
+    List<ProcessTemplateQueryListVo> selectListWithTypeName();
+
 }

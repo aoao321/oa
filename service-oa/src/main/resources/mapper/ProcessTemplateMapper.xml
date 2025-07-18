@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aoao.mapper.ProcessTemplateMapper">
+
+    <select id="selectListWithTypeName" resultType="com.aoao.vo.process.ProcessTemplateQueryListVo">
+        SELECT pt.id,pt.name,pt.icon_url,pt.description,pt.create_time,pt.update_time,type.name AS processTypeName
+            FROM oa_process_template pt
+                LEFT JOIN oa_process_type type
+                    ON  pt.process_type_id = type.id
+                        WHERE pt.is_deleted=0
+
+    </select>
+</mapper>
