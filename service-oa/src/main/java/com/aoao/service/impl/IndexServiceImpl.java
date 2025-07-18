@@ -5,6 +5,7 @@ import com.aoao.dto.system.LoginDto;
 import com.aoao.enums.ResponseCodeEnum;
 import com.aoao.mapper.SysMenuMapper;
 import com.aoao.mapper.SysUserMapper;
+import com.aoao.mapper.SysUserRoleMapper;
 import com.aoao.model.system.SysUser;
 import com.aoao.result.Result;
 import com.aoao.service.IndexService;
@@ -42,6 +43,10 @@ public class IndexServiceImpl implements IndexService {
     private SysUserMapper sysUserMapper;
     @Autowired
     private SysMenuService sysMenuService;
+    @Autowired
+    private SysUserRoleMapper sysUserRoleMapper;
+    @Autowired
+    private SysMenuMapper sysMenuMapper;
 
     @Override
     public LoginVo login(LoginDto loginDto) throws BadCredentialsException, DisabledException {
@@ -84,15 +89,13 @@ public class IndexServiceImpl implements IndexService {
         // 根据userId获取路由信息，返回用户可以操作的左侧菜单
         List<RouterVo> routerVoList = sysMenuService.findSysMenuByUserId(userId);
 
-
-
-
         // 根据userId获取按钮权限，返回用户可以操作的按钮
-        List<String> permsList = sysMenuService.findUserPermsList(sysUser.getId());
+        List<String> permsList = sysMenuMapper.selectUserWithMenus(username);
+
 
         // 封装返回信息
         Map<String, Object> map = new HashMap<>();
-        map.put("roles", Collections.singletonList("admin"));
+        map.put("roles", sysUserRoleMapper.selectRoleNamesByUserId(userId));
         map.put("name", sysUser.getName());
         map.put("avatar", "https://oss.aliyuncs.com/aliyun_id_photo_bucket/default_handsome.jpg");
         map.put("routers", routerVoList);

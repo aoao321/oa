@@ -90,7 +90,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     return;
                 }
                 // 查询用户权限
-                List<String> list = sysMenuMapper.selectUserWithMenus(selectedUser.getId());
+                List<String> list = sysMenuMapper.selectUserWithMenus(selectedUser.getUsername());
                 LoginUser loginUser = new LoginUser(selectedUser, list);
                 // 存入SecurityContextHolder
                 SecurityContextHolder

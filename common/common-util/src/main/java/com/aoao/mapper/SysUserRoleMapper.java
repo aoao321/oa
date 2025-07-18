@@ -19,6 +19,7 @@ public interface SysUserRoleMapper extends BaseMapper<SysUserRole> {
 
     void insertBatch(@Param("userRoleList") List<SysUserRole> userRoleList);
 
-
     List<Map<String, Object>> selectRoleNamesByUserIds(@Param("userIds") List<Long> ids);
+
+    List<String> selectRoleNamesByUserId(Long userId);
 }

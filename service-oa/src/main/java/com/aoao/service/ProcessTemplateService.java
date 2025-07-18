@@ -18,13 +18,15 @@ import java.util.Map;
 public interface ProcessTemplateService {
     PageResult<ProcessTemplateQueryListVo> list(int page, int limit);
 
-    void save(ProcessTemplateDto processTemplateDto);
+    void save(ProcessTemplate processTemplate);
 
     void removeById(Long id);
 
     ProcessTemplate getById(Long id);
 
-    void update(ProcessTypeDto processTypeDto);
+    void update(ProcessTemplate processTemplate);
 
     Map<String,Object> uploadProcessDefinition(MultipartFile file) throws FileNotFoundException;
+
+    void publish(Long id);
 }

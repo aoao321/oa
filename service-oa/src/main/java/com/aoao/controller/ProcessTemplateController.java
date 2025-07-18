@@ -38,9 +38,9 @@ public class ProcessTemplateController {
 
     @ApiOperation("新增模板")
     @PostMapping("/save")
-    @PreAuthorize("hasAuthority('bnt.processTemplate.add')")
-    public Result save(@RequestBody ProcessTemplateDto processTemplateDto) {
-        processTemplateService.save(processTemplateDto);
+    @PreAuthorize("hasAuthority('bnt.processTemplate.publish')")
+    public Result save(@RequestBody ProcessTemplate processTemplate) {
+        processTemplateService.save(processTemplate);
         return Result.ok();
     }
 
@@ -62,9 +62,9 @@ public class ProcessTemplateController {
 
     @ApiOperation("更新模板")
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('bnt.processTemplate.update')")
-    public Result update(@RequestBody ProcessTypeDto processTypeDto) {
-        processTemplateService.update(processTypeDto);
+    @PreAuthorize("hasAuthority('bnt.processTemplate.pubilsh')")
+    public Result update(@RequestBody ProcessTemplate processTemplate) {
+        processTemplateService.update(processTemplate);
         return Result.ok();
     }
 
@@ -78,6 +78,15 @@ public class ProcessTemplateController {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @ApiOperation("发布")
+    @PutMapping("/publish/{id}")
+    @PreAuthorize("hasAuthority('bnt.processTemplate.publish')")
+    public Result publish(@PathVariable Long id) {
+        // 模板的status==1说明该模板已经发布
+        processTemplateService.publish(id);
+        return Result.ok();
     }
 
 

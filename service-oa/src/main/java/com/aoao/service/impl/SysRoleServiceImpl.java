@@ -60,7 +60,6 @@ public class SysRoleServiceImpl implements SysRoleService {
         BeanUtils.copyProperties(sysRoleDto,sysRole);
         // 设置属性
         sysRole.setCreateTime(new Date());
-        // TODO: 由当前管理员创建
         sysRole.setDescription("");
         sysRoleMapper.insert(sysRole);
 

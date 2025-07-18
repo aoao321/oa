@@ -2,6 +2,7 @@ package com.aoao.security.service;
 
 import com.aoao.mapper.SysMenuMapper;
 import com.aoao.mapper.SysUserMapper;
+import com.aoao.model.system.SysMenu;
 import com.aoao.model.system.SysUser;
 import com.aoao.vo.system.LoginUser;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -40,7 +41,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
         // 查询用户权限
-        List<String> list = sysMenuMapper.selectUserWithMenus(selectedUser.getId());
+        List<String> list = sysMenuMapper.selectUserWithMenus(selectedUser.getUsername());
+
 
         return new LoginUser(selectedUser,list);
     }

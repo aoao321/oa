@@ -41,9 +41,10 @@ public class ProcessTemplateServiceImpl implements ProcessTemplateService {
     }
 
     @Override
-    public void save(ProcessTemplateDto processTemplateDto) {
-
+    public void save(ProcessTemplate processTemplate) {
+        processTemplateMapper.insert(processTemplate);
     }
+
 
     @Override
     public void removeById(Long id) {
@@ -56,9 +57,10 @@ public class ProcessTemplateServiceImpl implements ProcessTemplateService {
     }
 
     @Override
-    public void update(ProcessTypeDto processTypeDto) {
-
+    public void update(ProcessTemplate processTemplate) {
+        processTemplateMapper.updateById(processTemplate);
     }
+
 
     @Override
     public Map<String,Object> uploadProcessDefinition(MultipartFile file) throws FileNotFoundException {
@@ -80,8 +82,19 @@ public class ProcessTemplateServiceImpl implements ProcessTemplateService {
         }
         HashMap<String, Object> map = new HashMap<>();
 
+        // 返回文件的路径，以文件名前缀为模板key
         map.put("processDefinitionPath", "processes/" + filename);
         map.put("processDefinitionKey", filename.substring(0, filename.lastIndexOf(".")));
         return map;
+    }
+
+    @Override
+    public void publish(Long id) {
+        ProcessTemplate processTemplate = processTemplateMapper.selectById(id);
+        // 设置status=1
+        processTemplate.setStatus(1);
+        processTemplateMapper.updateById(processTemplate);
+
+        // 部署流程
     }
 }
