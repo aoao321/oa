@@ -22,7 +22,7 @@ public class ProcessVo {
 	private Long userId;
 	private String name;
 
-	@TableField("process_template_id")
+
 	private Long processTemplateId;
 	private String processTemplateName;
 

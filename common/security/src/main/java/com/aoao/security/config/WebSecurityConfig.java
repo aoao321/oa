@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,18 +15,21 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
-/**
- * @author aoao
- * @create 2025-07-16-10:35
- */
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig  {
+public class WebSecurityConfig {
+
     @Autowired
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+
     @Autowired
     private AuthenticationEntryPoint authenticationEntryPoint;
+
     @Autowired
     private AccessDeniedHandler accessDeniedHandler;
 
@@ -37,30 +39,32 @@ public class WebSecurityConfig  {
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOriginPattern("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        config.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // 关闭CSRF
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 无状态会话
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeRequests(authorize -> authorize
+                        .antMatchers("/admin/system/index/login").anonymous()
+                        .antMatchers("/admin/**").authenticated()
                 )
-                .authorizeRequests(authorize ->
-                        authorize
-                                .antMatchers("/admin/system/index/login").anonymous() // 登录接口允许匿名访问，未认证可以访问，认证之后就不可以访问了
-                                //.antMatchers("/hello").permitAll() // 无论是否认证都可以登录
-                                .antMatchers("/admin/**").authenticated() // 其他请求需要认证
-                );
-
-        // 添加JWT过滤器到UsernamePasswordAuthenticationFilter之前
-        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
-
-        // 配置异常处理
-        http.exceptionHandling(exceptionHandling ->
-                exceptionHandling
+                .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler)
-        );
-
-        http.cors();
+                )
+                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         return http.build();
     }

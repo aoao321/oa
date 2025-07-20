@@ -6,12 +6,15 @@ import com.aoao.mapper.ProcessTemplateMapper;
 import com.aoao.model.process.ProcessTemplate;
 import com.aoao.model.process.ProcessType;
 import com.aoao.result.PageResult;
+import com.aoao.service.ProcessService;
 import com.aoao.service.ProcessTemplateService;
 import com.aoao.vo.process.ProcessTemplateQueryListVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.github.pagehelper.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +34,8 @@ public class ProcessTemplateServiceImpl implements ProcessTemplateService {
 
     @Autowired
     private ProcessTemplateMapper processTemplateMapper;
+    @Autowired
+    private ProcessService processService;
 
     @Override
     public PageResult<ProcessTemplateQueryListVo> list(int page, int limit) {
@@ -63,21 +68,21 @@ public class ProcessTemplateServiceImpl implements ProcessTemplateService {
 
 
     @Override
-    public Map<String,Object> uploadProcessDefinition(MultipartFile file) throws FileNotFoundException {
+    public Map<String, Object> uploadProcessDefinition(MultipartFile file) throws FileNotFoundException {
         // 获取classes
         String path = new File(ResourceUtils.getURL("classpath:").getPath()).getAbsolutePath();
         // 设置上传文件夹
-        File tempFile = new File(path + "/process/");
+        File tempFile = new File(path + "/processes/");
         // 不存在创建文件夹
         if (!tempFile.exists()) {
             tempFile.mkdirs();
         }
         String filename = file.getOriginalFilename();
-        File imageFile = new File(path + "/process/" + filename);
+        File imageFile = new File(path + "/processes/" + filename);
         // 保存文件流到本地
-        try{
+        try {
             file.transferTo(imageFile);
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new FileNotFoundException("文件上传失败");
         }
         HashMap<String, Object> map = new HashMap<>();
@@ -89,12 +94,17 @@ public class ProcessTemplateServiceImpl implements ProcessTemplateService {
     }
 
     @Override
+    @Transactional
     public void publish(Long id) {
         ProcessTemplate processTemplate = processTemplateMapper.selectById(id);
+        // 实现部署流程
+        String path = processTemplate.getProcessDefinitionPath();
+        if (!StringUtil.isEmpty(path)) {
+            processService.deloyByZip(path);
+        }
         // 设置status=1
         processTemplate.setStatus(1);
         processTemplateMapper.updateById(processTemplate);
-
-        // 部署流程
     }
+
 }

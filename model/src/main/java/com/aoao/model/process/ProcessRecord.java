@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @ApiModel(description = "ProcessRecord")
+
 @TableName("oa_process_record")
 public class ProcessRecord extends BaseEntity {
 

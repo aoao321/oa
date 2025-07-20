@@ -1,4 +1,4 @@
-package com.aoao.vo.process;
+package com.aoao.dto.process;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @ApiModel(description = "Process")
-public class ProcessQueryVo {
+public class ProcessQueryDto {
 
 	@ApiModelProperty(value = "关键字")
 	private String keyword;

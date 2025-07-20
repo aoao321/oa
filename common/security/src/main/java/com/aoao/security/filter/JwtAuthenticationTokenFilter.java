@@ -2,6 +2,7 @@ package com.aoao.security.filter;
 
 import com.aoao.mapper.SysMenuMapper;
 import com.aoao.mapper.SysUserMapper;
+import com.aoao.context.UserContext;
 import com.aoao.model.system.SysUser;
 import com.aoao.security.handler.RestAuthenticationEntryPoint;
 import com.aoao.vo.system.LoginUser;
@@ -48,56 +49,58 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private String tokenHeaderKey;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 从请求头中获取token
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
         String header = request.getHeader(tokenHeaderKey);
 
         if (StringUtils.startsWith(header, tokenPrefix)) {
-            // 截取 Token 令牌
-            String token = StringUtils.substring(header, 7);
+            String token = StringUtils.substring(header, tokenPrefix.length());
             if (StringUtils.isEmpty(token)) {
-                // 直接放行
                 filterChain.doFilter(request, response);
                 return;
             }
-            // 验证token是否可用
+
             try {
                 jwtTokenHelper.validateToken(token);
+                String username = jwtTokenHelper.getUsernameByToken(token);
+
+                if (StringUtils.isNotBlank(username)
+                        && Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
+
+                    SysUser selectedUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("username", username));
+                    if (selectedUser == null) {
+                        throw new UsernameNotFoundException(username);
+                    }
+                    if (selectedUser.getStatus() != 1) {
+                        authenticationEntryPoint.commence(request, response,
+                                new AuthenticationServiceException("用户已被禁用"));
+                        return;
+                    }
+                    List<String> list = sysMenuMapper.selectUserWithMenus(selectedUser.getUsername());
+                    LoginUser loginUser = new LoginUser(selectedUser, list);
+
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities()));
+
+                    // **这里存入ThreadLocal**
+                    UserContext.setUsername(username);
+                }
             } catch (ExpiredJwtException e) {
                 authenticationEntryPoint.commence(request, response, new AuthenticationServiceException("Token 已失效"));
                 return;
             } catch (JwtException | IllegalArgumentException e) {
-                // 抛出异常，统一让 AuthenticationEntryPoint 处理响应参数
                 authenticationEntryPoint.commence(request, response, new AuthenticationServiceException("Token 不可用"));
                 return;
             }
-            // 从 Token 中解析出用户名
-            String username = jwtTokenHelper.getUsernameByToken(token);
-            // 用户名不为空，并且SecurityContextHolder没有
-            if (StringUtils.isNotBlank(username)
-                    && Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
-                // 从数据库中根据传入的username查询用户信息
-                SysUser selectedUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>()
-                        .eq("username", username));
-                // 判断用户是否存在
-                if (selectedUser == null) {
-                    throw new UsernameNotFoundException(username);
-                }
-                // 检查用户状态
-                if (selectedUser.getStatus() != 1) {
-                    authenticationEntryPoint.commence(request, response,
-                            new AuthenticationServiceException("用户已被禁用"));
-                    return;
-                }
-                // 查询用户权限
-                List<String> list = sysMenuMapper.selectUserWithMenus(selectedUser.getUsername());
-                LoginUser loginUser = new LoginUser(selectedUser, list);
-                // 存入SecurityContextHolder
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities()));
-            }
         }
-        filterChain.doFilter(request, response);
+
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            // 过滤器执行完毕后清理，避免内存泄漏
+            UserContext.clear();
+        }
     }
+
 }

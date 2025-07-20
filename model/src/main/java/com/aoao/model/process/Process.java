@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @ApiModel(description = "Process")
 @TableName("oa_process")
+
 public class Process extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;

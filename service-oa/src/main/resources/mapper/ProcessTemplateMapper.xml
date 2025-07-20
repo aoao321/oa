@@ -8,8 +8,30 @@
         SELECT pt.id,pt.name,pt.icon_url,pt.description,pt.create_time,pt.update_time,pt.form_props,pt.status,pt.form_options,type.name AS processTypeName
             FROM oa_process_template pt
                 LEFT JOIN oa_process_type type
-                    ON  pt.process_type_id = type.id
-                        WHERE pt.is_deleted=0
+            ON  pt.process_type_id = type.id
+            WHERE pt.is_deleted=0
 
     </select>
+
+    <select id="selectListByTypeIds" resultType="com.aoao.model.process.ProcessTemplate" parameterType="java.util.List">
+        SELECT
+        id,
+        name,
+        icon_url AS iconUrl,
+        process_type_id AS processTypeId,
+        form_props AS formProps,
+        form_options AS formOptions,
+        description,
+        process_definition_key AS processDefinitionKey,
+        process_definition_path AS processDefinitionPath,
+        process_model_id AS processModelId,
+        status
+        FROM oa_process_template
+        WHERE is_deleted = 0
+        AND process_type_id IN
+        <foreach collection="list" item="typeId" open="(" separator="," close=")">
+            #{typeId}
+        </foreach>
+    </select>
+
 </mapper>

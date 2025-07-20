@@ -20,7 +20,15 @@
         <knife4j.version>2.0.9</knife4j.version>
     </properties>
 
+
+
     <dependencies>
+
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.3.0</version> <!-- 或更高 -->
+        </dependency>
         <!-- 保持您原有的所有依赖不变 -->
         <dependency>
             <groupId>com.aoao</groupId>
