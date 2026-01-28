@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
  */
 @Data
 @NoArgsConstructor
-
 public class LoginUser implements UserDetails {
 
     private SysUser user;

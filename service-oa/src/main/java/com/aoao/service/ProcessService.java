@@ -32,5 +32,5 @@ public interface ProcessService {
 
     PageResult<ProcessVo> findProcessed(int page, int limit);
 
-    PageResult<ProcessVo> findStarts(int page, int limit);
+    PageResult<ProcessVo> findStarted(int page, int limit);
 }

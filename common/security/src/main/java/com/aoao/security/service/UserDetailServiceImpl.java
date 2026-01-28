@@ -2,11 +2,9 @@ package com.aoao.security.service;
 
 import com.aoao.mapper.SysMenuMapper;
 import com.aoao.mapper.SysUserMapper;
-import com.aoao.model.system.SysMenu;
 import com.aoao.model.system.SysUser;
 import com.aoao.vo.system.LoginUser;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

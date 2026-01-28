@@ -7,7 +7,6 @@ import com.aoao.result.Result;
 import com.aoao.service.ProcessService;
 import com.aoao.dto.process.ProcessQueryDto;
 import com.aoao.service.ProcessTemplateService;
-import com.aoao.service.ProcessTypeService;
 import com.aoao.vo.process.ApprovalVo;
 import com.aoao.vo.process.ProcessTypeWithTemplateVo;
 import com.aoao.vo.process.ProcessVo;
@@ -16,7 +15,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.aoao.model.process.Process;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -39,6 +37,27 @@ public class ProcessController {
     private ProcessTemplateService processTemplateService;
 
 
+    @ApiOperation("启动流程")
+    @PostMapping("/startUp")
+    public Result startUp(@RequestBody ProcessFormDto processFormDto, HttpServletRequest request) {
+        processService.startUp(processFormDto,request);
+        return Result.ok();
+    }
+
+    @ApiOperation("查询审批列表")
+    @GetMapping("/{page}/{limit}")
+    public Result<PageResult<ProcessVo>> page(@PathVariable("page") int page, @PathVariable("limit") int limit, ProcessQueryDto processQueryDto) {
+        PageResult<ProcessVo> pageResult = processService.page(page,limit,processQueryDto);
+        return Result.ok(pageResult);
+    }
+
+    @ApiOperation("查询审批详情")
+    @GetMapping("/show/{id}")
+    public Result<Map<String,Object>> show(@PathVariable("id") Long id) {
+        Map<String,Object> map = processService.show(id);
+        return Result.ok(map);
+    }
+
     @ApiOperation(value = "待处理")
     @GetMapping("/findPending/{page}/{limit}")
     public Result<PageResult<ProcessVo>> findPending(@PathVariable int page, @PathVariable int limit) {
@@ -46,10 +65,25 @@ public class ProcessController {
         return Result.ok(pageResult);
     }
 
-    @ApiOperation("查询审批列表")
-    @GetMapping("/{page}/{limit}")
-    public Result<PageResult<ProcessVo>> page(@PathVariable("page") int page, @PathVariable("limit") int limit, ProcessQueryDto processQueryDto) {
-        PageResult<ProcessVo> pageResult = processService.page(page,limit,processQueryDto);
+    @ApiOperation("审批")
+    @PostMapping("/approve")
+    public Result approve(@RequestBody ApprovalVo approvalVo) {
+        processService.approve(approvalVo);
+        return Result.ok();
+    }
+
+    @ApiOperation("查询已处理审批列表")
+    @GetMapping("/findProcessed/{page}/{limit}")
+    public Result<PageResult<ProcessVo>> findProcessed(@PathVariable("page") int page, @PathVariable("limit") int limit) {
+        PageResult<ProcessVo> pageResult = processService.findProcessed(page,limit);
+        return Result.ok(pageResult);
+    }
+
+    @ApiOperation("查询已发进度")
+    @GetMapping("/findStarted/{page}/{limit}")
+    public Result<PageResult<ProcessVo>> findStarted(@PathVariable("page") int page, @PathVariable("limit") int limit) {
+        PageResult<ProcessVo> pageResult = processService.findStarted(page,limit);
+
         return Result.ok(pageResult);
     }
 
@@ -65,41 +99,5 @@ public class ProcessController {
     public Result<ProcessTemplate> getProcessTemplate(@PathVariable("id") Long id) {
         ProcessTemplate template = processTemplateService.getById(id);
         return Result.ok(template);
-    }
-
-    @ApiOperation("启动流程")
-    @PostMapping("/startUp")
-    public Result startUp(@RequestBody ProcessFormDto processFormDto, HttpServletRequest request) {
-        processService.startUp(processFormDto,request);
-        return Result.ok();
-    }
-
-    @ApiOperation("查询审批详情")
-    @GetMapping("/show/{id}")
-    public Result<Map<String,Object>> show(@PathVariable("id") Long id) {
-        Map<String,Object> map = processService.show(id);
-        return Result.ok(map);
-    }
-
-    @PostMapping("/approve")
-    public Result approve(@RequestBody ApprovalVo approvalVo) {
-        processService.approve(approvalVo);
-        return Result.ok();
-    }
-
-    @ApiOperation("查询已处理审批列表")
-    @GetMapping("/{page}/{limit}")
-    public Result<PageResult<ProcessVo>> findProcessed(@PathVariable("page") int page, @PathVariable("limit") int limit) {
-        PageResult<ProcessVo> pageResult = processService.findProcessed(page,limit);
-
-        return Result.ok(pageResult);
-    }
-
-    @ApiOperation("查询已发进度")
-    @GetMapping("/{page}/{limit}")
-    public Result<PageResult<ProcessVo>> findStarts(@PathVariable("page") int page, @PathVariable("limit") int limit) {
-        PageResult<ProcessVo> pageResult = processService.findStarts(page,limit);
-
-        return Result.ok(pageResult);
     }
 }

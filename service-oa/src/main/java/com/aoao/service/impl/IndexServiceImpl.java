@@ -2,19 +2,15 @@ package com.aoao.service.impl;
 
 import com.aoao.dto.system.LoginDto;
 
-import com.aoao.enums.ResponseCodeEnum;
 import com.aoao.mapper.SysMenuMapper;
 import com.aoao.mapper.SysUserMapper;
 import com.aoao.mapper.SysUserRoleMapper;
 import com.aoao.model.system.SysUser;
-import com.aoao.result.Result;
 import com.aoao.service.IndexService;
 import com.aoao.service.SysMenuService;
-import com.aoao.service.SysUserService;
 import com.aoao.utils.JwtTokenHelper;
 import com.aoao.vo.system.LoginUser;
 import com.aoao.vo.system.LoginVo;
-import com.aoao.vo.system.MetaVo;
 import com.aoao.vo.system.RouterVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +44,7 @@ public class IndexServiceImpl implements IndexService {
     @Autowired
     private SysMenuMapper sysMenuMapper;
 
+
     @Override
     public LoginVo login(LoginDto loginDto) throws BadCredentialsException, DisabledException {
             // authenticate用户认证
@@ -62,6 +59,8 @@ public class IndexServiceImpl implements IndexService {
             // 获取认证的结果
             LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
             String token = jwtTokenHelper.generateToken(loginUser.getUsername());
+            // 写入redis，并设置过期时间
+
             return new LoginVo(token);
     }
 

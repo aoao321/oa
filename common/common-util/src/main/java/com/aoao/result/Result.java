@@ -4,11 +4,6 @@ import com.aoao.enums.ResponseCodeEnum;
 import lombok.Data;
 
 import java.io.Serializable;
-
-/**
- * @author aoao
- * @create 2025-07-11-14:24
- */
 @Data
 public class Result<T> implements Serializable {
 

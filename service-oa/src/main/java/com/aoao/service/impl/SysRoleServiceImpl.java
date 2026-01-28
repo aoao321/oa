@@ -89,7 +89,6 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public void removeByBatch(List<Long> ids) {
         sysRoleMapper.deleteBatchIds(ids);
-
     }
 
     @Override

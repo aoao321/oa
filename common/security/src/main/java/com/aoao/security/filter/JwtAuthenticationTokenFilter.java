@@ -51,7 +51,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
+        // 获取token
         String header = request.getHeader(tokenHeaderKey);
 
         if (StringUtils.startsWith(header, tokenPrefix)) {
@@ -60,14 +60,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-
+            // 处理异常
             try {
                 jwtTokenHelper.validateToken(token);
                 String username = jwtTokenHelper.getUsernameByToken(token);
 
                 if (StringUtils.isNotBlank(username)
                         && Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
-
+                    // 查询用户
                     SysUser selectedUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("username", username));
                     if (selectedUser == null) {
                         throw new UsernameNotFoundException(username);
@@ -77,13 +77,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                                 new AuthenticationServiceException("用户已被禁用"));
                         return;
                     }
+                    // 获取权限
                     List<String> list = sysMenuMapper.selectUserWithMenus(selectedUser.getUsername());
                     LoginUser loginUser = new LoginUser(selectedUser, list);
 
                     SecurityContextHolder.getContext()
                             .setAuthentication(new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities()));
 
-                    // **这里存入ThreadLocal**
+                    // 这里存入ThreadLocal
                     UserContext.setUsername(username);
                 }
             } catch (ExpiredJwtException e) {

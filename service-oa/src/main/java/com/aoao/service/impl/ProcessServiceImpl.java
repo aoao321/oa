@@ -1,6 +1,5 @@
 package com.aoao.service.impl;
 
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.aoao.context.UserContext;
@@ -15,7 +14,6 @@ import com.aoao.model.system.SysUser;
 import com.aoao.result.PageResult;
 import com.aoao.service.ProcessRecordService;
 import com.aoao.service.ProcessService;
-import com.aoao.utils.JwtTokenHelper;
 import com.aoao.vo.process.ApprovalVo;
 import com.aoao.vo.process.ProcessTypeWithTemplateVo;
 import com.aoao.vo.process.ProcessVo;
@@ -31,9 +29,7 @@ import org.activiti.engine.TaskService;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +42,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -165,6 +160,7 @@ public class ProcessServiceImpl implements ProcessService {
         ProcessInstance processInstance = runtimeService
                 .startProcessInstanceByKey(processDefinitionKey, String.valueOf(processId), map);
         String instanceId = processInstance.getId();
+
         // 查询下一个审批人
         List<Task> taskList = taskService
                 .createTaskQuery()
@@ -211,7 +207,7 @@ public class ProcessServiceImpl implements ProcessService {
         int offset = (page - 1) * limit;
         List<Task> taskList = query.listPage(offset, limit);
         if (taskList == null || taskList.size() == 0) {
-            throw new RuntimeException("当前用户没有待办任务");
+            return new PageResult<>(0, Collections.emptyList());
         }
         // 分页查询，所有待办集合
         List<Long> processIds = new ArrayList<>();
@@ -222,7 +218,6 @@ public class ProcessServiceImpl implements ProcessService {
             ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
                     .processInstanceId(processInstanceId)
                     .singleResult();
-
             // 获取processId
             String businessKey = processInstance.getBusinessKey();
             if (businessKey == null) {
@@ -231,6 +226,7 @@ public class ProcessServiceImpl implements ProcessService {
             long processId = Long.parseLong(businessKey);
             processIds.add(processId);
         }
+
         // 查询所有的待办任务
         PageHelper.startPage(page, limit);
         // 当前审批人包括当前用户名
@@ -276,7 +272,6 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public void approve(ApprovalVo approvalVo) {
         String taskId = approvalVo.getTaskId();
-
         // 获取当前任务的流程变量（可用于调试或判断）
         Map<String, Object> variable = taskService.getVariables(taskId);
         for (Map.Entry<String, Object> entry : variable.entrySet()) {
@@ -306,9 +301,8 @@ public class ProcessServiceImpl implements ProcessService {
                 for (Task task : taskList) {
                     String assignee = task.getAssignee();
                     if (StringUtils.isNotBlank(assignee)) {
-                        SysUser sysUser = sysUserMapper.selectOne(
-                                new QueryWrapper<SysUser>().eq("username", assignee)
-                        );
+                        SysUser sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>()
+                                .eq("username", assignee));
                         if (sysUser != null) {
                             assigneeList.add(sysUser.getName());
                             // TODO: 可以加推送通知
@@ -320,11 +314,9 @@ public class ProcessServiceImpl implements ProcessService {
                 process.setDescription("等待 " + StringUtils.join(assigneeList, ", ") + " 审批");
                 process.setStatus(1); // 审批中
             } else { // taskList为空 所有任务完成，流程已结束
-
                 process.setDescription("审批完成");
                 process.setStatus(2); // 审批完成
             }
-
             processMapper.updateById(process);
 
         } else {// 审核不通过
@@ -406,14 +398,14 @@ public class ProcessServiceImpl implements ProcessService {
         // 3. 根据流程实例id查 oa_process 表
         PageHelper.startPage(page, limit);
         // 当前审批人包括当前用户名
-        List<ProcessVo> processVoList = processMapper.selectProcessVoByProcessIds(processIds, username);
+        List<ProcessVo> processVoList = processMapper.selectProcessVoByProcessIds(processIds, null);
         PageInfo<ProcessVo> pageInfo = new PageInfo<>(processVoList);
 
         return new PageResult<>(pageInfo.getTotal(), pageInfo.getList());
     }
 
     @Override
-    public PageResult<ProcessVo> findStarts(int page, int limit) {
+    public PageResult<ProcessVo> findStarted(int page, int limit) {
         // 根据当前用户查询vo
         String username = UserContext.getUsername();
         SysUser sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("username", username));
@@ -423,7 +415,7 @@ public class ProcessServiceImpl implements ProcessService {
         PageHelper.startPage(page, limit);
         List<ProcessVo> processVoList = processMapper.selectProcessVo(processQueryDto);
         PageInfo<ProcessVo> pageInfo = new PageInfo<>(processVoList);
-        return new PageResult<ProcessVo>(pageInfo.getTotal(),pageInfo.getList());
+        return new PageResult<>(pageInfo.getTotal(),pageInfo.getList());
     }
 }
 

@@ -5,7 +5,6 @@ import com.aoao.mapper.SysUserMapper;
 import com.aoao.mapper.SysUserRoleMapper;
 import com.aoao.model.process.Process;
 import com.aoao.model.system.SysUser;
-import com.aoao.model.system.SysUserRole;
 import com.aoao.vo.process.ProcessVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.junit.jupiter.api.Test;
