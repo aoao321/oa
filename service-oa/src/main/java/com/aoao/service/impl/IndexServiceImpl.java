@@ -1,5 +1,6 @@
 package com.aoao.service.impl;
 
+import com.aoao.constant.RedisKeyConstants;
 import com.aoao.dto.system.LoginDto;
 
 import com.aoao.mapper.SysMenuMapper;
@@ -14,6 +15,7 @@ import com.aoao.vo.system.LoginVo;
 import com.aoao.vo.system.RouterVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author aoao
@@ -43,25 +46,29 @@ public class IndexServiceImpl implements IndexService {
     private SysUserRoleMapper sysUserRoleMapper;
     @Autowired
     private SysMenuMapper sysMenuMapper;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
 
     @Override
     public LoginVo login(LoginDto loginDto) throws BadCredentialsException, DisabledException {
-            // authenticate用户认证
-            UsernamePasswordAuthenticationToken authenticationToken
-                    = new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
-            // 使用authenticationManager执行密码认证
-            Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-            // 没通过，给出提示
-            if (Objects.isNull(authenticate)) {
-                throw new RuntimeException("登录失败");
-            }
-            // 获取认证的结果
-            LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
-            String token = jwtTokenHelper.generateToken(loginUser.getUsername());
-            // 写入redis，并设置过期时间
-
-            return new LoginVo(token);
+        // authenticate用户认证
+        UsernamePasswordAuthenticationToken authenticationToken
+                = new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
+        // 使用authenticationManager执行密码认证
+        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+        // 没通过，给出提示
+        if (Objects.isNull(authenticate)) {
+            throw new RuntimeException("登录失败");
+        }
+        // 获取认证的结果
+        LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
+        SysUser user = loginUser.getUser();
+        String token = jwtTokenHelper.generateToken(user.getUsername());
+        // 写入redis，并设置过期时间
+        String redisKey = RedisKeyConstants.buildTokenKey(user.getId());
+        stringRedisTemplate.opsForValue().set(redisKey, token, 144000, TimeUnit.SECONDS);
+        return new LoginVo(token);
     }
 
     @Override
@@ -102,11 +109,6 @@ public class IndexServiceImpl implements IndexService {
 
         return map;
     }
-
-
-
-
-
 
 
 }

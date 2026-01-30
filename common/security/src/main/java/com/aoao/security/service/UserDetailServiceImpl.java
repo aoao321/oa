@@ -40,8 +40,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
         }
         // 查询用户权限
         List<String> list = sysMenuMapper.selectUserWithMenus(selectedUser.getUsername());
-
-
         return new LoginUser(selectedUser,list);
     }
 }

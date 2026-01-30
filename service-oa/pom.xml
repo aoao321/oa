@@ -29,7 +29,6 @@
             <artifactId>cglib</artifactId>
             <version>3.3.0</version> <!-- 或更高 -->
         </dependency>
-        <!-- 保持您原有的所有依赖不变 -->
         <dependency>
             <groupId>com.aoao</groupId>
             <artifactId>common-util</artifactId>
@@ -89,7 +88,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- 仅新增以下三个Swagger相关依赖 -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>

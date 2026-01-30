@@ -1,5 +1,6 @@
 package com.aoao.controller;
 
+import com.aoao.aspect.Log;
 import com.aoao.dto.system.LoginDto;
 import com.aoao.enums.ResponseCodeEnum;
 import com.aoao.result.Result;
@@ -30,6 +31,7 @@ public class IndexController {
 
     @PostMapping("/login")
     @ApiOperation("登录")
+    @Log(description = "用户登录")
     public Result<LoginVo> login(@RequestBody LoginDto loginDto) {
         try {
             return Result.ok(indexService.login(loginDto));

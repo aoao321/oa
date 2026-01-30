@@ -53,14 +53,29 @@ public class LogAspect {
 
             // 执行切点方法
             Object result = joinPoint.proceed();
-            log.info("====== 请求开始: [{}], 入参: {}, 请求类: {}, 请求方法: {}, 请求路径: {}====== ",
-                    description, arg, className, methodName);
+            log.info(
+                    "\n====== 请求开始 ======\n" +
+                            "业务描述: {}\n" +
+                            "请求类: {}\n" +
+                            "请求方法: {}\n" +
+                            "入参: {}\n" +
+                            "======================",
+                    description, className, methodName, arg
+            );
+
 
             // 结束计算消耗时间
             long endTime = System.currentTimeMillis();
 
-            log.info("====== 请求结束: [{}], 耗时: {}ms, 出参: {} ====== ",
-                    description, (endTime-startTime), JsonUtil.toJson(result));
+            log.info(
+                    "\n====== 请求结束 ======\n" +
+                            "业务描述: {}\n" +
+                            "耗时: {} ms\n" +
+                            "出参: {}\n" +
+                            "======================",
+                    description, (endTime - startTime), JsonUtil.toJson(result)
+            );
+
 
             return result;
         } finally {

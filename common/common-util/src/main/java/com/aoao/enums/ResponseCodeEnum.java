@@ -19,7 +19,8 @@ public enum ResponseCodeEnum {
     PWD_ERROR(401, "密码错误"),
     REPEAT_LOGIN(404,"用户重复登录"),
     FORBIDDEN(406, "权限不足"),
-    STATUS_DOWN(405,"账号被禁用" );
+    STATUS_DOWN(405,"账号被禁用" ),
+    EXPIRED_LOGIN(407,"登录超时，请重新登录");
 
     ResponseCodeEnum(Integer errorCode, String errorMessage) {
         this.errorCode = errorCode;

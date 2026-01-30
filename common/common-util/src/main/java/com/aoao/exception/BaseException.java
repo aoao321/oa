@@ -12,10 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class BaseException extends RuntimeException {
-
     // 异常码
     private Integer errorCode;
     // 错误信息
     private String errorMessage;
-
 }
