@@ -22,6 +22,7 @@
             <if test="end != null">
                 AND su.create_time &lt;= #{end}
             </if>
+            AND su.is_deleted = 0
         </where>
     </select>
 

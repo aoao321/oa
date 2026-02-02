@@ -1,6 +1,7 @@
 package com.aoao.controller;
 
 
+import com.aoao.aspect.OperLog;
 import com.aoao.dto.system.AssignMenuDto;
 import com.aoao.model.system.SysMenu;
 import com.aoao.result.Result;
@@ -33,6 +34,7 @@ public class SysMenuController {
         return Result.ok(nodes);
     }
 
+    @OperLog(title = "新增菜单", businessType = "INSERT")
     @ApiOperation("新增菜单")
     @PreAuthorize("hasAuthority('bnt.sysMenu.add')")
     @PostMapping("/save")
@@ -41,6 +43,7 @@ public class SysMenuController {
         return Result.ok();
     }
 
+    @OperLog(title = "删除菜单", businessType = "DELETE")
     @ApiOperation("删除菜单")
     @PreAuthorize("hasAuthority('bnt.sysMenu.remove')")
     @DeleteMapping("/remove/{id}")
@@ -49,6 +52,7 @@ public class SysMenuController {
         return Result.ok();
     }
 
+    @OperLog(title = "修改角色", businessType = "UPDATE")
     @ApiOperation("修改菜单")
     @PreAuthorize("hasAuthority('bnt.sysMenu.update')")
     @PutMapping("/update")
@@ -65,6 +69,7 @@ public class SysMenuController {
         return Result.ok(list);
     }
 
+    @OperLog(title = "更新权限", businessType = "UPDATE")
     @ApiOperation("修改菜单权限")
     @PreAuthorize("hasAuthority('bnt.sysMenu.update')")
     @PostMapping("/doAssign")

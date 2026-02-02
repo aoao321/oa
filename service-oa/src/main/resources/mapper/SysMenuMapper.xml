@@ -27,6 +27,7 @@
         WHERE u.id = #{userId}
           AND m.status = 1
         ORDER BY m.sort_value ASC
+
     </select>
 
 </mapper>

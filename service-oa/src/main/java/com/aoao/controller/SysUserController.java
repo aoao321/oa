@@ -1,5 +1,6 @@
 package com.aoao.controller;
 
+import com.aoao.aspect.OperLog;
 import com.aoao.dto.system.SysUserQueryDto;
 import com.aoao.model.system.SysUser;
 import com.aoao.result.PageResult;
@@ -32,7 +33,6 @@ public class SysUserController {
     private SysUserService sysUserService;
 
 
-    //用户条件分页查询
     @ApiOperation("用户条件分页查询")
     @PreAuthorize("hasAuthority('bnt.sysUser.list')")
     @GetMapping("{page}/{limit}")
@@ -51,6 +51,7 @@ public class SysUserController {
         return Result.ok(user);
     }
 
+    @OperLog(title = "新增用户", businessType = "INSERT")
     @ApiOperation(value = "保存用户")
     @PreAuthorize("hasAuthority('bnt.sysUser.add')")
     @PostMapping("save")
@@ -59,6 +60,7 @@ public class SysUserController {
         return Result.ok();
     }
 
+    @OperLog(title = "更新用户", businessType = "UPDATE")
     @ApiOperation(value = "更新用户")
     @PreAuthorize("hasAuthority('bnt.sysUser.update')")
     @PutMapping("update")
@@ -67,6 +69,7 @@ public class SysUserController {
         return Result.ok();
     }
 
+    @OperLog(title = "删除用户", businessType = "DELETE")
     @ApiOperation(value = "删除用户")
     @PreAuthorize("hasAuthority('bnt.sysUser.remove')")
     @DeleteMapping("remove/{id}")
@@ -75,6 +78,7 @@ public class SysUserController {
         return Result.ok();
     }
 
+    @OperLog(title = "更新用户状态", businessType = "UPDATE")
     @ApiOperation(value = "更新用户状态")
     @PreAuthorize("hasAuthority('bnt.sysUser.update')")
     @GetMapping("/updateStatus/{id}/{status}")

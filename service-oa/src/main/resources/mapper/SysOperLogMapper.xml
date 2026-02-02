@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aoao.mapper.SysOperLogMapper">
+
+
+    <select id="selectListByDto" resultType="com.aoao.model.system.SysOperLog">
+        SELECT * FROM sys_oper_log
+        <where>
+            is_deleted = 0
+            <if test="dto.title != null">
+                AND title LIKE CONCAT('%', #{dto.title}, '%')
+            </if>
+            <if test="dto.businessType">
+                AND business_type = #{dto.businessType}
+            </if>
+            <if test="dto.operName != null">
+                AND oper_name = #{dto.operName}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+</mapper>

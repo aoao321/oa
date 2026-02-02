@@ -95,8 +95,11 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public void save(SysUser user) {
-        sysUserMapper.insert(user);
+    public void save(SysUser sysUser) {
+        if (sysUser.getPhone() != null && !sysUser.getPhone().matches("^1\\d{10}$")) {
+            throw new RuntimeException("手机号格式不正确");
+        }
+        sysUserMapper.insert(sysUser);
     }
 
     @Override

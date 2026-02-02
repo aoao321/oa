@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aoao.mapper.SysDeptMapper">
+
+
+    <select id="selectListByDto" resultType="com.aoao.model.system.SysDept">
+        SELECT *
+        FROM sys_dept
+        <where>
+            is_deleted = 0
+            <if test="dto.deptName != null and dto.deptName != ''">
+                AND name LIKE CONCAT('%', #{dto.deptName}, '%')
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

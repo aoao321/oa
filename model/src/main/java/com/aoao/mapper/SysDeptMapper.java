@@ -1,8 +1,12 @@
 package com.aoao.mapper;
 
+import com.aoao.dto.system.SysDeptQueryDto;
 import com.aoao.model.system.SysDept;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author aoao
@@ -10,4 +14,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SysDeptMapper extends BaseMapper<SysDept> {
+    List<SysDept> selectListByDto(@Param("dto") SysDeptQueryDto sysDeptQueryDto);
 }

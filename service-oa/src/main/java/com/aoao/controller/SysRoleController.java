@@ -1,5 +1,6 @@
 package com.aoao.controller;
 
+import com.aoao.aspect.OperLog;
 import com.aoao.dto.system.AssginRoleDto;
 import com.aoao.dto.system.SysRoleDto;
 import com.aoao.model.system.SysRole;
@@ -37,6 +38,7 @@ public class SysRoleController {
         return Result.ok(sysRolePageResult);
     }
 
+    @OperLog(title = "删除角色", businessType = "DELETE")
     @PreAuthorize("hasAuthority('bnt.sysRole.remove')")
     @DeleteMapping("/remove/{id}")
     @ApiOperation("删除角色")
@@ -45,6 +47,7 @@ public class SysRoleController {
         return Result.ok();
     }
 
+    @OperLog(title = "新增角色", businessType = "INSERT")
     @PreAuthorize("hasAuthority('bnt.sysRole.add')")
     @PostMapping("/save")
     @ApiOperation("新增角色")
@@ -61,6 +64,7 @@ public class SysRoleController {
         return Result.ok(sysRoleQueryVo);
     }
 
+    @OperLog(title = "更新角色", businessType = "UPDATE")
     @PreAuthorize("hasAuthority('bnt.sysRole.update')")
     @PutMapping("/update")
     @ApiOperation("修改角色信息")
@@ -69,6 +73,7 @@ public class SysRoleController {
         return Result.ok();
     }
 
+    @OperLog(title = "批量删除角色", businessType = "DELETE")
     @PreAuthorize("hasAuthority('bnt.sysRole.remove')")
     @DeleteMapping("/batchRemove")
     @ApiOperation("批量删除")
@@ -85,6 +90,7 @@ public class SysRoleController {
         return Result.ok(roles);
     }
 
+    @OperLog(title = "更新用户角色", businessType = "UPDATE")
     @PreAuthorize("hasAuthority('bnt.sysUser.assignRole')")
     @ApiOperation("修改用户角色")
     @PostMapping("/doAssign")
